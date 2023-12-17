@@ -1,0 +1,137 @@
+﻿@using System.Data
+@model DataTable
+@using AdminPanel.Areas.LOC_Country.Models
+@{
+    Layout = "~/Views/shared/_Layout.cshtml";
+    LOC_CountryFilterModel filterModel = new LOC_CountryFilterModel();
+}
+
+<div class="pagetitle">
+    <h1>Country</h1>
+</div>
+@if (TempData["key"] != null)
+{
+    <div id="tempAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["key"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="d-flex justify-content-between card-header">
+                    <div class="">
+                        <h5>Filter</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form class="row my-1 p-1">
+                        <div class="col-6">
+                            <input type="text" placeholder="Enter Country Name" asp-for="@filterModel.CountryName" class="form-control mt-2" id="inputAddress">
+                        </div>
+                        <div class="col-6">
+                            <input type="text" placeholder="Enter Country Code" asp-for="@filterModel.CountryCode" class="form-control mt-2" id="inputAddress">
+                        </div>
+                        <div class="col-1 my-3 me-3">
+                            <button type="submit" class="btn btn-primary" asp-area="LOC_Country" asp-controller="LOC_Country" asp-action="LOC_CountryFilter">
+                                Search
+                            </button>
+                        </div>
+                        <div class="col-10 my-3">
+                            <form>
+                                <button type="reset" class="btn btn-danger" runat="server" OnClientClick="this.form.reset();return false;">Clear</button>
+                            </form>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<br />
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="d-flex justify-content-between card-header">
+                    <div class="">
+                        <h5>CountryList</h5>
+                    </div>
+                    <div class="">
+                        <a asp-area="LOC_Country" asp-controller="LOC_Country" asp-action="Add">
+                            <input type="button" class="btn btn-success" value="Add Country" />
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <br />
+
+                    <!-- Table with hoverable rows -->
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">CountryName</th>
+                                <th scope="col">CountryCode</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow dr in Model.Rows)
+                            {
+                                <tr>
+                                    <td>@dr["CountryName"]</td>
+                                    <td>@dr["CountryCode"]</td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <div class="me-2">
+                                                <form method="post" asp-area="LOC_Country" asp-controller="LOC_Country" asp-action="Delete">
+                                                    <input type="hidden" value="@Convert.ToInt32(dr["CountryID"])" name="CountryID" />
+                                                    <button type="submit" class="btn btn-danger" value="Delete" onclick="return fun1();">Delete</button>
+                                                </form>
+                                            </div>
+                                            <div class="ms-2">
+                                                <form asp-area="LOC_Country" asp-controller="LOC_Country" asp-action="Add">
+                                                    <input type="hidden" value="@Convert.ToInt32(dr["CountryID"])" name="CountryID" />
+                                                    <button type="submit" class="btn btn-info" value="Update">Update</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <!-- End Table with hoverable rows -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts
+    {
+    <script>
+        function fun1() {
+            if (confirm("Are you sure you want to delete?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        window.onload = function () {
+            setTimeout(function () {
+                var alert = document.getElementById('tempAlert');
+                if (alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, 5000);  // 5000 milliseconds = 5 seconds
+        };
+
+    </script>
+}

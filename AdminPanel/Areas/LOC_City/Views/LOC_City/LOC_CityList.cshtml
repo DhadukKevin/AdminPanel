@@ -1,0 +1,136 @@
+﻿@using System.Data
+@model DataTable
+@using AdminPanel.Areas.LOC_City.Models
+@{
+    Layout = "~/Views/shared/_Layout.cshtml";
+    LOC_CityFilterModel FilterModel = new LOC_CityFilterModel();
+}
+
+@if (TempData["key"] != null)
+{
+    <div id="tempAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["key"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="d-flex justify-content-between card-header">
+                    <div class="">
+                        <h5>Filter</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form class="row my-1 p-1">
+                        <div class="col-3">
+                            <select class="form-control" asp-for="@FilterModel.CountryID" asp-items="@(new SelectList(ViewBag.CountryList,"CountryID","CountryName"))">
+                                <option value="">Select Country</option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <select class="form-control" asp-for="@FilterModel.StateID" asp-items="@(new SelectList(ViewBag.StateList,"StateID","StateName"))">
+                                <option value="">Select State</option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" asp-for="@FilterModel.CityName" placeholder="Enter City Name" />
+                        </div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" asp-for="@FilterModel.CityCode" placeholder="Enter City Code" />
+                        </div>
+                        <div class="col-1 my-3 me-3">
+                            <button class="btn btn-primary" type="submit" asp-area="LOC_City" asp-controller="LOC_City" asp-action="LOC_CityFilter">Search</button>
+                        </div>
+                        <div class="col-10 my-3">
+                            <form>
+                                <button class="btn btn-danger" type="reset" runat="server" OnClientClick="this.form.reset();return false;">Clear</button>
+                            </form>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+</section>
+
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <br />
+            <div class="card">
+                <div class="card-body">
+                    <br />
+                    <div class="row">
+                        <div class="col-10">
+                            <h4>City List</h4>
+                        </div>
+                        <div class="col-2 mb-3">
+                            <a asp-area="LOC_City" asp-controller="LOC_City" asp-action="Add">
+                                <input type="button" class="btn btn-success" value="Add City" />
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Table with hoverable rows -->
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">CityName</th>
+                                <th scope="col">CityCode</th>
+                                <th scope="col">StateName</th>
+                                <th scope="col">CountryName</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow dr in Model.Rows)
+                            {
+                                <tr>
+                                    <td>@dr["CityName"]</td>
+                                    <td>@dr["CityCode"]</td>
+                                    <td>@dr["StateName"]</td>
+                                    <td>@dr["CountryName"]</td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <div class="me-2">
+                                                <form method="post" asp-area="LOC_City" asp-controller="LOC_City" asp-action="Delete">
+                                                    <input type="hidden" value="@Convert.ToInt32(dr["CityID"])" name="CityID" />
+                                                    <button type="submit" class="btn btn-danger" value="Delete" onclick="return fun1();">Delete</button>
+                                                </form>
+                                            </div>
+                                            <div class="ms-2">
+                                                <form asp-area="LOC_City" asp-controller="LOC_City" asp-action="Add">
+                                                    <input type="hidden" value="@Convert.ToInt32(dr["CityID"])" name="CityID" />
+                                                    <button type="submit" class="btn btn-info" value="Update">Update</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <!-- End Table with hoverable rows -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts
+    {
+    <script>
+        function fun1() {
+            if (confirm("Are you sure you want to delete?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    </script>
+}

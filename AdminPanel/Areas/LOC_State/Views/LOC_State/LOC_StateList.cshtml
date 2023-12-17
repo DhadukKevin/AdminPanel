@@ -1,0 +1,140 @@
+﻿@using System.Data
+@model DataTable
+@using AdminPanel.Areas.LOC_State.Models
+@{
+    LOC_StateFilterModel filterModel = new LOC_StateFilterModel();
+    Layout = "~/Views/shared/_Layout.cshtml";
+}
+@if (TempData["key"] != null)
+{
+    <div id="tempAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["key"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="d-flex justify-content-between card-header">
+                    <div class="">
+                        <h5>Filter</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form class="row my-1 p-1">
+                        <div class="form-group col-4 mt-2">
+                            <div class="">
+                                <select class="form-control" asp-for="@filterModel.CountryID" asp-items="@(new SelectList(ViewBag.CountryList,"CountryID","CountryName"))">
+                                    <option value="">Select Country</option>
+                                </select>
+                                <span asp-validation-for="@filterModel.CountryID" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" placeholder="Enter State Name" asp-for="@filterModel.StateName" class="form-control mt-2" id="inputAddress">
+                        </div>
+                        <div class="col-4">
+                            <input type="text" placeholder="Enter State Code" asp-for="@filterModel.StateCode" class="form-control mt-2" id="inputAddress">
+                        </div>
+                        <div class="col-1 my-3 me-3">
+                            <button type="submit" class="btn btn-primary" asp-area="LOC_State" asp-controller="LOC_State" asp-action="LOC_StateFilter">
+                                Search
+                            </button>
+                        </div>
+                        <div class="col-10 my-3">
+                            <form>
+                                <button type="submit" class="btn btn-danger" runat="server" OnClientClick="this.form.reset();return false;">Clear</button>
+                            </form>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <br />
+            <div class="card">
+                <div class="card-body">
+                    <br />
+                    <div class="row">
+                        <div class="col-10">
+                            <h4>State List</h4>
+                        </div>
+                        <div class="col-2 mb-3">
+                            <a asp-area="LOC_State" asp-controller="LOC_State" asp-action="LOC_StateAdd">
+                                <input type="button" class="btn btn-success" value="Add State" />
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Table with hoverable rows -->
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">StateName</th>
+                                <th scope="col">StateCode</th>
+                                <th scope="col">CountryName</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow dr in Model.Rows)
+                            {
+                                <tr>
+                                    <td>@dr["StateName"]</td>
+                                    <td>@dr["StateCode"]</td>
+                                    <td>@dr["CountryName"]</td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <div class="me-2">
+                                                <form method="post" asp-area="LOC_State" asp-controller="LOC_State" asp-action="Delete">
+                                                    <input type="hidden" value="@Convert.ToInt32(dr["StateID"])" name="StateID" />
+                                                    <button type="submit" class="btn btn-danger" value="Delete" onclick="return fun1();">Delete</button>
+                                                </form>
+                                            </div>
+                                            <div class="ms-2">
+                                                <form asp-area="LOC_State" asp-controller="LOC_State" asp-action="LOC_StateAdd">
+                                                    <input type="hidden" value="@Convert.ToInt32(dr["StateID"])" name="StateID" />
+                                                    <button type="submit" class="btn btn-info" value="Update">Update</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <!-- End Table with hoverable rows -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts
+    {
+    <script>
+        function fun1() {
+            if (confirm("Are you sure you want to delete?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        window.onload = function () {
+            setTimeout(function () {
+                var alert = document.getElementById('tempAlert');
+                if (alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, 5000);  // 5000 milliseconds = 5 seconds
+        };
+    </script>
+}

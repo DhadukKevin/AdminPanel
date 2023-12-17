@@ -1,0 +1,35 @@
+﻿@{
+    Layout = "~/Views/shared/_Layout.cshtml";
+}
+
+@model AdminPanel.Areas.MST_Branch.Models.MST_BranchModel
+
+<div class="mt-3 mb-3">
+    <h2>@TempData["name"]</h2>
+</div>
+<div class="card">
+    <div class="card-body">
+        <br />
+        <form>
+            @Html.HiddenFor(x=>x.BranchID)
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">Branch Name</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" asp-for="BranchName" />
+                    <span asp-validation-for="BranchName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">Branch Code</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" asp-for="BranchCode" />
+                    <span asp-validation-for="BranchCode" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-primary" type="submit" asp-area="MST_Branch" asp-controller="MSt_Branch" asp-action="Save">@TempData["button"]</button>
+                <a class="btn btn-secondary" asp-area="MST_Branch" asp-controller="MSt_Branch" asp-action="MST_BranchList">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
